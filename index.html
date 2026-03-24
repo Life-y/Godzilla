@@ -18,6 +18,205 @@
             id: ''
         }
     });
+
+    /**
+     * Godzilla Pendo Track Events
+     * Provides tracking functions for key user actions across the application.
+     */
+    var GodzillaTracking = (function() {
+
+        function safePendoTrack(eventName, properties) {
+            try {
+                if (typeof pendo !== 'undefined' && typeof pendo.track === 'function') {
+                    pendo.track(eventName, properties);
+                }
+            } catch (e) {
+                console.error('Pendo tracking error for event: ' + eventName, e);
+            }
+        }
+
+        return {
+            // Event 1: Fires when a user successfully generates a payload
+            trackPayloadGenerated: function(options) {
+                safePendoTrack('payload_generated', {
+                    payload_type: options.payload_type || '',
+                    encryption_method: options.encryption_method || '',
+                    script_suffix: options.script_suffix || '',
+                    output_format: options.output_format || ''
+                });
+            },
+
+            // Event 2: Fires when a shell connection is successfully established
+            trackShellConnectionEstablished: function(options) {
+                safePendoTrack('shell_connection_established', {
+                    payload_type: options.payload_type || '',
+                    encryption_method: options.encryption_method || '',
+                    target_host: options.target_host || '',
+                    connection_status: options.connection_status || 'success',
+                    response_time_ms: options.response_time_ms || 0
+                });
+            },
+
+            // Event 3: Fires when a shell connection attempt fails
+            trackShellConnectionFailed: function(options) {
+                safePendoTrack('shell_connection_failed', {
+                    payload_type: options.payload_type || '',
+                    encryption_method: options.encryption_method || '',
+                    target_host: options.target_host || '',
+                    error_type: options.error_type || '',
+                    error_message: (options.error_message || '').substring(0, 100)
+                });
+            },
+
+            // Event 4: Fires when a memory shell is successfully deployed
+            trackMemoryShellDeployed: function(options) {
+                safePendoTrack('memory_shell_deployed', {
+                    shell_type: options.shell_type || '',
+                    deployment_status: options.deployment_status || 'success',
+                    target_platform: options.target_platform || ''
+                });
+            },
+
+            // Event 5: Fires when a memory shell is unloaded
+            trackMemoryShellUnloaded: function(options) {
+                safePendoTrack('memory_shell_unloaded', {
+                    shell_type: options.shell_type || '',
+                    unload_status: options.unload_status || 'success',
+                    target_platform: options.target_platform || ''
+                });
+            },
+
+            // Event 6: Fires when a virtual terminal session is started
+            trackRemoteTerminalSessionStarted: function(options) {
+                safePendoTrack('remote_terminal_session_started', {
+                    terminal_type: options.terminal_type || '',
+                    payload_platform: options.payload_platform || '',
+                    connection_method: options.connection_method || ''
+                });
+            },
+
+            // Event 7: Fires when MSF integration is connected
+            trackMsfIntegrationConnected: function(options) {
+                safePendoTrack('msf_integration_connected', {
+                    integration_type: options.integration_type || '',
+                    payload_platform: options.payload_platform || '',
+                    msf_handler_type: options.msf_handler_type || '',
+                    connection_status: options.connection_status || 'success'
+                });
+            },
+
+            // Event 8: Fires when a ZIP operation completes
+            trackFileZipOperationCompleted: function(options) {
+                safePendoTrack('file_zip_operation_completed', {
+                    operation_type: options.operation_type || '',
+                    payload_platform: options.payload_platform || '',
+                    file_count: options.file_count || 0,
+                    total_size_bytes: options.total_size_bytes || 0
+                });
+            },
+
+            // Event 9: Fires when a JAR file is loaded into memory
+            trackJarLoadedToMemory: function(options) {
+                safePendoTrack('jar_loaded_to_memory', {
+                    jar_name: options.jar_name || '',
+                    jar_size_bytes: options.jar_size_bytes || 0,
+                    load_status: options.load_status || 'success'
+                });
+            },
+
+            // Event 10: Fires when credential harvesting completes (lemon plugin)
+            trackCredentialHarvestCompleted: function(options) {
+                safePendoTrack('credential_harvest_completed', {
+                    target_application: options.target_application || '',
+                    credentials_found_count: options.credentials_found_count || 0,
+                    harvest_status: options.harvest_status || 'success',
+                    target_platform: options.target_platform || ''
+                });
+            },
+
+            // Event 11: Fires when browser credential harvesting completes (ShapWeb)
+            trackBrowserCredentialsHarvested: function(options) {
+                safePendoTrack('browser_credentials_harvested', {
+                    browser_type: options.browser_type || '',
+                    credentials_found_count: options.credentials_found_count || 0,
+                    harvest_status: options.harvest_status || 'success'
+                });
+            },
+
+            // Event 12: Fires when Mimikatz execution completes (SafetyKatz)
+            trackMimikatzExecutionCompleted: function(options) {
+                safePendoTrack('mimikatz_execution_completed', {
+                    execution_status: options.execution_status || 'success',
+                    credentials_found_count: options.credentials_found_count || 0,
+                    target_platform: options.target_platform || ''
+                });
+            },
+
+            // Event 13: Fires when privilege escalation is executed
+            trackPrivilegeEscalationExecuted: function(options) {
+                safePendoTrack('privilege_escalation_executed', {
+                    escalation_method: options.escalation_method || '',
+                    target_os_version: options.target_os_version || '',
+                    escalation_status: options.escalation_status || '',
+                    original_privilege_level: options.original_privilege_level || '',
+                    escalated_privilege_level: options.escalated_privilege_level || ''
+                });
+            },
+
+            // Event 14: Fires when PHP open_basedir bypass completes
+            trackPhpOpenbasedirBypassCompleted: function(options) {
+                safePendoTrack('php_openbasedir_bypass_completed', {
+                    bypass_status: options.bypass_status || 'success',
+                    php_version: options.php_version || ''
+                });
+            },
+
+            // Event 15: Fires when PHP disable_functions bypass completes
+            trackPhpDisableFunctionsBypassCompleted: function(options) {
+                safePendoTrack('php_disable_functions_bypass_completed', {
+                    bypass_status: options.bypass_status || 'success',
+                    php_version: options.php_version || '',
+                    bypassed_functions: options.bypassed_functions || ''
+                });
+            },
+
+            // Event 16: Fires when code eval is executed (P_Eval_Code)
+            trackCodeEvalExecuted: function(options) {
+                safePendoTrack('code_eval_executed', {
+                    execution_status: options.execution_status || 'success',
+                    code_length: options.code_length || 0,
+                    output_length: options.output_length || 0
+                });
+            },
+
+            // Event 17: Fires when a screenshot is captured (Screen plugin)
+            trackScreenCaptureTaken: function(options) {
+                safePendoTrack('screen_capture_taken', {
+                    capture_status: options.capture_status || 'success',
+                    image_size_bytes: options.image_size_bytes || 0,
+                    resolution: options.resolution || ''
+                });
+            },
+
+            // Event 18: Fires when a servlet management action completes
+            trackServletManaged: function(options) {
+                safePendoTrack('servlet_managed', {
+                    action_type: options.action_type || '',
+                    servlet_name: options.servlet_name || '',
+                    operation_status: options.operation_status || 'success'
+                });
+            },
+
+            // Event 19: Fires when shellcode is loaded (ShellcodeLoader)
+            trackShellcodeLoaded: function(options) {
+                safePendoTrack('shellcode_loaded', {
+                    shellcode_size_bytes: options.shellcode_size_bytes || 0,
+                    load_status: options.load_status || 'success',
+                    loader_method: options.loader_method || ''
+                });
+            }
+        };
+    })();
     </script>
 </head>
 <body>
